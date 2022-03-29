@@ -1,0 +1,99 @@
+#ifndef __$__HTTP_ROCK__H__
+#define __$__HTTP_ROCK__H__ 1234
+#include<iostream>
+#include<map>
+#include<windows.h>
+#include<tm_utility>
+using namespace tm_utility;
+using namespace std;
+namespace http_rock
+{
+class Error
+{
+private:
+string error;
+public:
+Error();
+bool hasError();
+string getError();
+void setError(string error);
+};
+class Request
+{
+private:
+string method;
+string resource;
+string rowData;
+char isClientSideTechnologyResource;
+string forwardString;
+map<string,string> *queryStringDataMap;
+map<string,string> requestScopeMap;
+public:
+Request();
+void setMethod(string method);
+string getMethod();
+void setRowData(string rowData);
+string getRowData();
+void setForwardString(string forwardString);
+string getForwardString();
+void setResource(string resource);
+string getResource();
+void setIsClientSideTechnologyResource(char isClientSideTechnologyResource);
+char getIsClientSideTechnologyResource();
+void forward(string forwardString);
+void setQueryStringDataMap(map<string,string> *queryStringDataMap);
+string getParam(string key);
+void setAttr(string key,string value);
+string getAttr(string key);
+~Request();
+};
+class Response
+{
+private:
+int clientSocketDescriptor;
+bool connectionClosed;
+bool headerCreated;
+string contentType;
+void createHeader();
+public:
+Response(int clientSocketDescriptor);
+void setClientSocketDescriptor(int clientSocketDescriptor);
+void setContentType(string contentType);
+bool isClosed();
+bool isHeaderCreated();
+void send(string str);
+void close();
+~Response();
+};
+class HttpRock
+{
+private:
+int portNumber;
+int serverSocketDescriptor;
+struct sockaddr_in serverSocketInformation;
+struct sockaddr_in clientSocketInformation;
+string staticFileFolderPath;
+string requestString;
+bool closeServerSocket;
+void (*callBack)(Error &);
+WSAData wsaData;
+WORD ver;
+map<string,void (*)(Request &,Response &)> getTypeRequestMapping;
+map<string,void (*)(Request &,Response &)> postTypeRequestMapping;
+map<string,string> configurationMap;
+void initialize(Error &);
+void requestProcessor(int clientSocketDescriptor);
+void accept(Error *error);
+Request* parseRequest(string requestString);
+void send404(int);
+public:
+HttpRock();
+HttpRock(const HttpRock &)=delete;
+void useStatic(string staticFileFolderPath);
+void get(string url,void (*functionAddress)(Request &,Response &));
+void post(string url,void (*functionAddress)(Request &,Response &));
+void listen(int portNumber,void (*functionAddress)(Error &));
+~HttpRock();
+};
+}
+#endif

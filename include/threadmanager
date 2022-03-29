@@ -1,0 +1,46 @@
+#ifndef __$__THREAD_MANAGER__H__
+#define __$__THREAD_MANAGER__H__ 1234
+#include<thread>
+#include<tuple>
+template<typename function_type,typename ...data>
+class ThreadManager
+{
+private:
+thread *_thread;
+function_type functionAddress;
+tuple<data...> _tuple;
+template<size_t ...num>
+void threadStarter(index_sequence<num...>);
+public:
+ThreadManager(function_type functionAddress,data ...numberOfArguments);
+void start();
+~ThreadManager();
+};
+template<typename function_type,typename ...data>
+ThreadManager<function_type,data...>::ThreadManager(function_type functionAddress,data ...numberOfArguments)
+{
+this->functionAddress=functionAddress;
+this->_tuple=make_tuple(numberOfArguments...);
+this->_thread=NULL;
+}
+template<typename function_type,typename ...data>
+void ThreadManager<function_type,data...>::start()
+{
+threadStarter(index_sequence_for<data...>());
+}
+template<typename function_type,typename ...data>
+template<size_t ...num>
+void ThreadManager<function_type,data...>::threadStarter(index_sequence<num...>)
+{
+this->_thread=new thread(this->functionAddress,get<num>(this->_tuple)...);
+}
+template<typename function_type,typename ...data>
+ThreadManager<function_type,data...>::~ThreadManager()
+{
+if(this->_thread!=NULL)
+{
+this->_thread->join();
+delete this->_thread;
+}
+}
+#endif

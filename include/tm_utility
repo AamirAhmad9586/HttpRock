@@ -1,0 +1,64 @@
+#ifndef __$__TM__UTILITY__H__
+#define __$__TM__UTILITY__H__ 1234
+#include<iostream>
+using namespace std;
+namespace tm_utility
+{
+class URLEncoder
+{
+private:
+URLEncoder();
+public:
+static string encode(string str);
+};
+class URLDecoder
+{
+private:
+URLDecoder();
+public:
+static string decode(string str);
+};
+class TMDate
+{
+private:
+int dayOfMonth;
+int month;
+int year;
+int dayNumber;
+int isLeapYear(int);
+void toDayNumber();
+void fromDayNumber();
+void isValidDate(const char *dateString,int *isValid,int *d,int *m,int  *y);
+public:
+TMDate();
+TMDate(const char *dateString);
+TMDate(const TMDate &other);
+int getDayOfMonth();
+int getMonth();
+int getYear();
+void operator+=(int days);
+void operator-=(int days);
+TMDate & operator=(const TMDate &other);
+TMDate & operator=(const char *dateString);
+TMDate & operator=(string dateString);
+int operator<(const TMDate &other);
+int operator>(const TMDate &other);
+int operator<=(const TMDate &other);
+int operator>=(const TMDate &other);
+int operator==(const TMDate &other);
+int operator!=(const TMDate &other);
+TMDate operator+(int days);
+TMDate operator-(int days);
+int getDayOfWeek();
+void getMonthString(char *monthString);
+void getMonthShortString(char *monthShortString);
+void getDayOfWeekString(char *dayOfWeekString);
+void getDayOfWeekShortString(char *dayOfWeekShortString);
+virtual ~TMDate();
+};
+string getContentType(string resourceName);
+char isClientSideResource(string resource);
+string toLowerCase(string str);
+string getExtension(string resource);
+}
+#endif
