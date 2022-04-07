@@ -1,6 +1,5 @@
 /lib
 /Main.cpp
-/init/compile.bat
 /init/Main.cpp
 /init/startup.exe
 /src/*.o
